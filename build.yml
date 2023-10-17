@@ -1,0 +1,31 @@
+name: EAS Build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: [master]
+jobs:
+  build:
+    name: Install and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: npm
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: sR3GAbWG_KvdQECBmk_HWeLlgMFbxiFnpbddQ7Ii
+      - name: Install dependencies
+        run: npm install
+      - name: Install expo CLI
+        run: npm install -g expo-cli
+      - name: Publish on expo server
+        run: eas build --profile preview --platform ios
+      - name: Update on Expo
+        run: eas update --auto
